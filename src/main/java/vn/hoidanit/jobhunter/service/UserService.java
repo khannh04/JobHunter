@@ -1,5 +1,6 @@
 package vn.hoidanit.jobhunter.service;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.repository.UserRepository;
@@ -45,6 +46,10 @@ public class UserService {
             return this.userRepository.save(updateUser);
         }
         return null;
+    }
+
+    public User handleUserByUsername(String username){
+        return this.userRepository.findByEmail(username);
     }
 
 }
