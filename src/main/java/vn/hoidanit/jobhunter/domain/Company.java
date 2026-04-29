@@ -2,6 +2,7 @@ package vn.hoidanit.jobhunter.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import vn.hoidanit.jobhunter.util.SecurityUtil;
 
 import java.time.Instant;
 
@@ -32,8 +33,14 @@ public class Company {
 
     @PrePersist
     public void handleBeforeCreate(){
-        this.createBy = "karic";
+        this.createBy = SecurityUtil.getCurrentUserLogin().isPresent() == true ? SecurityUtil.getCurrentUserLogin().get() : "";
         this.createdAt = Instant.now();
+    }
+
+    @PreUpdate
+    public void handleBeforeUpdate(){
+        this.updateBy = SecurityUtil.getCurrentUserLogin().isPresent() == true ? SecurityUtil.getCurrentUserLogin().get() : "";
+        this.updateAt = Instant.now();
     }
 
     public long getId() {
