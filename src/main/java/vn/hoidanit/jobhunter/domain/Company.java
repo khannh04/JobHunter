@@ -1,6 +1,7 @@
 package vn.hoidanit.jobhunter.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 import java.time.Instant;
 
@@ -11,6 +12,7 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotBlank(message = "Name cannot blank")
     private String name;
 
     @Column(columnDefinition = "MEDIUMTEXT")
@@ -27,6 +29,12 @@ public class Company {
     private String createBy;
 
     private String updateBy;
+
+    @PrePersist
+    public void handleBeforeCreate(){
+        this.createBy = "karic";
+        this.createdAt = Instant.now();
+    }
 
     public long getId() {
         return id;
