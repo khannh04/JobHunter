@@ -9,6 +9,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.dto.LoginDTO;
@@ -16,6 +17,7 @@ import vn.hoidanit.jobhunter.domain.dto.ResLoginDTO;
 import vn.hoidanit.jobhunter.service.UserService;
 import vn.hoidanit.jobhunter.util.SecurityUtil;
 import vn.hoidanit.jobhunter.util.annotation.ApiMessage;
+import vn.hoidanit.jobhunter.util.error.IdInvalidException;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -93,4 +95,18 @@ public class AuthController {
         return ResponseEntity.ok().body(userLogin);
     }
 
+    @GetMapping("/auth/refresh")
+    @ApiMessage("Get User by Refresh Token")
+    public ResponseEntity<String> getRefreshToken(@CookieValue(name = "refresh_token") String refresh_token) throws IdInvalidException {
+        Jwt decodeToken = this.securityUtil.checkValidRefreshToken(refresh_token);
+        // check valid
+        String email = decodeToken.getSubject();
+
+        // check user by token + email
+        User currentUser = this.userService.findByRefreshTokenAndEmail(refresh_token, email);
+        if(currentUser == null){
+            throw new IdInvalidException("Invalid Refresh Token");
+        }
+        return ResponseEntity.ok().body(email);
+    }
 }
