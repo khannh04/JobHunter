@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import vn.hoidanit.jobhunter.domain.Company;
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.response.ResCreateUserDTO;
 import vn.hoidanit.jobhunter.domain.response.ResUpdateUserDTO;
@@ -18,16 +19,26 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     private  final UserRepository userRepository;
+    private final CompanyService companyService;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, CompanyService companyService) {
         this.userRepository = userRepository;
+        this.companyService = companyService;
     }
 
     public User handleCreateNewUser(User user) {
+
+        // check company
+        if (user.getCompany() != null){
+            Optional<Company> companyOptional = this.companyService.findById(user.getCompany().getId());
+            user.setCompany(companyOptional.isPresent() ? companyOptional.get() : null);
+        }
+
          return this.userRepository.save(user);
     }
 
     public void handleDeleteUser(long id){
+
         this.userRepository.deleteById(id);
     }
 
@@ -67,7 +78,10 @@ public class UserService {
                         item.getAge(),
                         item.getAddress(),
                         item.getCreatedAt(),
-                        item.getUpdatedAt()))
+                        item.getUpdatedAt(),
+                        new ResUserDTO.CompanyUser(
+                                item.getCompany() != null ? item.getCompany().getId() : 0,
+                                item.getCompany() != null ? item.getCompany().getName() : null)))
                 .collect(Collectors.toList());
         rs.setResult(listUser);
         return rs;
@@ -81,6 +95,12 @@ public class UserService {
             updateUser.setName(user.getName());
             updateUser.setAge(user.getAge());
             updateUser.setGender(user.getGender());
+            // check company
+            if (user.getCompany() != null){
+                Optional<Company> companyOptional = this.companyService.findById(user.getCompany().getId());
+                user.setCompany(companyOptional.isPresent() ? companyOptional.get() : null);
+
+            }
             return this.userRepository.save(updateUser);
         }
         return null;
@@ -95,6 +115,12 @@ public class UserService {
         res.setGender(user.getGender());
         res.setCreateAt(user.getCreatedAt());
         res.setEmail(user.getEmail());
+        if (user.getCompany() != null){
+            ResCreateUserDTO.CompanyUser companyUser = new ResCreateUserDTO.CompanyUser();
+            companyUser.setId(user.getCompany().getId());
+            companyUser.setName(user.getCompany().getName());
+            res.setCompanyUser(companyUser);
+        }
         return res;
     }
 
@@ -108,6 +134,12 @@ public class UserService {
         res.setEmail(user.getEmail());
         res.setCreatedAt(user.getCreatedAt());
         res.setUpdatedAt(user.getUpdatedAt());
+        if (user.getCompany() != null){
+            ResUserDTO.CompanyUser company = new ResUserDTO.CompanyUser();
+            company.setId(user.getCompany().getId());
+            company.setName(user.getCompany().getName());
+            res.setCompany(company);
+        }
         return res;
     }
 
@@ -119,6 +151,12 @@ public class UserService {
         res.setGender(user.getGender());
         res.setAddress(user.getAddress());
         res.setUpdatedAt(user.getUpdatedAt());
+        if (user.getCompany() != null){
+            ResUpdateUserDTO.CompanyUser com = new ResUpdateUserDTO.CompanyUser();
+            com.setId(user.getCompany().getId());
+            com.setName(user.getCompany().getName());
+            res.setCompany(com);
+        }
         return res;
     }
 
@@ -137,4 +175,5 @@ public class UserService {
     public User findByRefreshTokenAndEmail(String token, String email){
         return this.userRepository.findByRefreshTokenAndEmail(token, email);
     }
+
 }

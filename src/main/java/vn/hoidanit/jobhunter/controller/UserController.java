@@ -7,14 +7,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import vn.hoidanit.jobhunter.domain.Company;
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.response.ResCreateUserDTO;
 import vn.hoidanit.jobhunter.domain.response.ResUpdateUserDTO;
 import vn.hoidanit.jobhunter.domain.response.ResUserDTO;
 import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
+import vn.hoidanit.jobhunter.service.CompanyService;
 import vn.hoidanit.jobhunter.service.UserService;
 import vn.hoidanit.jobhunter.util.annotation.ApiMessage;
 import vn.hoidanit.jobhunter.util.error.IdInvalidException;
+
+import java.util.Optional;
 
 
 @RestController
@@ -22,10 +26,12 @@ import vn.hoidanit.jobhunter.util.error.IdInvalidException;
 public class UserController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final CompanyService companyService;
 
-    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
+    public UserController(UserService userService, PasswordEncoder passwordEncoder, CompanyService companyService) {
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
+        this.companyService = companyService;
     }
 
     @PostMapping("/users")
@@ -37,6 +43,15 @@ public class UserController {
         }
         String hashPassword = this.passwordEncoder.encode(postManUser.getPassword());
         postManUser.setPassword(hashPassword);
+        if (postManUser.getCompany() != null){
+            Optional<Company> companyOptional = this.companyService.findById(postManUser.getCompany().getId());
+            if (companyOptional.isPresent()){
+                postManUser.setCompany(companyOptional.get());
+            }else {
+                throw new IdInvalidException("Company is not exist");
+            }
+
+        }
         User karicUser = this.userService.handleCreateNewUser(postManUser);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResCreateUserDto(karicUser));
