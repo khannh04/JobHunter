@@ -3,9 +3,8 @@ package vn.hoidanit.jobhunter.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
-import vn.hoidanit.jobhunter.domain.Skill;
+import vn.hoidanit.jobhunter.domain.Job;
 
 @Repository
-public interface SkillRepository extends JpaRepository<Skill, Long>, JpaSpecificationExecutor<Skill> {
-    public boolean existsByName(String name);
+public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificationExecutor<Job> {
 }
