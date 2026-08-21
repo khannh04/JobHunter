@@ -14,12 +14,10 @@ import java.util.stream.Collectors;
 @Service
 public class JobService {
     private final JobRepository jobRepository;
-    private final ResCreateJobDTO resCreateJobDTO;
     private final SkillRepository skillRepository;
 
-    public JobService(JobRepository jobRepository, ResCreateJobDTO resCreateJobDTO, SkillRepository skillRepository){
+    public JobService(JobRepository jobRepository, SkillRepository skillRepository){
         this.jobRepository = jobRepository;
-        this.resCreateJobDTO = resCreateJobDTO;
         this.skillRepository = skillRepository;
     }
 
