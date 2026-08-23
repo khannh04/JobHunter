@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import vn.hoidanit.jobhunter.domain.Job;
 import vn.hoidanit.jobhunter.domain.Skill;
 import vn.hoidanit.jobhunter.domain.job.ResCreateJobDTO;
+import vn.hoidanit.jobhunter.domain.job.ResUpdateJobDTO;
 import vn.hoidanit.jobhunter.repository.JobRepository;
 import vn.hoidanit.jobhunter.repository.SkillRepository;
 
@@ -61,5 +62,42 @@ public class JobService {
 
     public Optional<Job> fetchJobById(long id){
         return this.jobRepository.findById(id);
+    }
+
+    public ResUpdateJobDTO update(Job job){
+        // check skill
+        if (job.getSkills() != null){
+            List<Long> reqSkill = job.getSkills()
+                    .stream().map(x -> x.getId())
+                    .collect(Collectors.toList());
+            List<Skill> dbSkill = this.skillRepository.findByIdIn(reqSkill);
+            job.setSkills(dbSkill);
+        }
+
+        // update job
+        Job currentJob = this.jobRepository.save(job);
+
+        // convert response
+        ResUpdateJobDTO res = new ResUpdateJobDTO();
+        res.setId(currentJob.getId());
+        res.setName(currentJob.getName());
+        res.setSalary(currentJob.getSalary());
+        res.setQuantity(currentJob.getQuantity());
+        res.setLocation(currentJob.getLocation());
+        res.setLevel(currentJob.getLevel());
+        res.setStartDate(currentJob.getStartDate());
+        res.setEndDate(currentJob.getEndDate());
+        res.setActive(currentJob.isActive());
+        res.setCreatedAt(currentJob.getCreatedAt());
+        res.setCreatedBy(currentJob.getCreatedBy());
+
+        if (currentJob.getSkills() != null){
+            List<String> skill = currentJob.getSkills()
+                    .stream().map(item -> item.getName())
+                    .collect(Collectors.toList());
+            res.setSkills(skill);
+        }
+
+        return res;
     }
 }

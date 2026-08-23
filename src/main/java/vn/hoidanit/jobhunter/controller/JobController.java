@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.hoidanit.jobhunter.domain.Job;
 import vn.hoidanit.jobhunter.domain.job.ResCreateJobDTO;
+import vn.hoidanit.jobhunter.domain.job.ResUpdateJobDTO;
 import vn.hoidanit.jobhunter.service.JobService;
 import vn.hoidanit.jobhunter.util.annotation.ApiMessage;
 import vn.hoidanit.jobhunter.util.error.IdInvalidException;
@@ -31,13 +32,13 @@ public class JobController {
 
     @PutMapping("/jobs")
     @ApiMessage("Update A Job")
-    public ResponseEntity<ResCreateJobDTO> update(@Valid @RequestBody Job job) throws IdInvalidException {
+    public ResponseEntity<ResUpdateJobDTO> update(@Valid @RequestBody Job job) throws IdInvalidException {
         // check id
         Optional<Job> currentJob = this.jobService.fetchJobById(job.getId());
         if (!currentJob.isPresent()){
             throw new IdInvalidException("Job not found");
         }
 
-        return ResponseEntity.ok().body(null);
+        return ResponseEntity.ok().body(this.jobService.update(job));
     }
 }
