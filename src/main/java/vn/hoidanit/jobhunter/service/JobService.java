@@ -1,10 +1,14 @@
 package vn.hoidanit.jobhunter.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.hoidanit.jobhunter.domain.Job;
 import vn.hoidanit.jobhunter.domain.Skill;
-import vn.hoidanit.jobhunter.domain.job.ResCreateJobDTO;
-import vn.hoidanit.jobhunter.domain.job.ResUpdateJobDTO;
+import vn.hoidanit.jobhunter.domain.response.job.ResCreateJobDTO;
+import vn.hoidanit.jobhunter.domain.response.job.ResUpdateJobDTO;
+import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.repository.JobRepository;
 import vn.hoidanit.jobhunter.repository.SkillRepository;
 
@@ -99,5 +103,26 @@ public class JobService {
         }
 
         return res;
+    }
+
+    public void delete(long id){
+        this.jobRepository.deleteById(id);
+    }
+
+    public ResultPaginationDTO fetchAllJobs(Specification<Job> spe, Pageable pageable){
+        Page<Job> jobPage = this.jobRepository.findAll(spe, pageable);
+        ResultPaginationDTO rs = new ResultPaginationDTO();
+        ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
+
+        mt.setPage(jobPage.getNumber() + 1);
+        mt.setPageSize(jobPage.getSize());
+
+        mt.setPages(jobPage.getTotalPages());
+        mt.setTotal(jobPage.getTotalElements());
+
+        rs.setResult(jobPage.getContent());
+        rs.setMeta(mt);
+
+        return rs;
     }
 }
