@@ -49,7 +49,7 @@ public class SkillController {
         return ResponseEntity.ok().body(this.skillService.updateASkill(skill));
     }
 
-    @DeleteMapping("/skills{id}")
+    @DeleteMapping("/skills/{id}")
     @ApiMessage("Delete A Skill")
     public ResponseEntity<Void> delete(@PathVariable("id") long id) throws IdInvalidException {
         Skill currentSkill = this.skillService.fetchSkillById(id);

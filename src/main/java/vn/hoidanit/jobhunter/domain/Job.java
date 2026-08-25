@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import vn.hoidanit.jobhunter.util.SecurityUtil;
 import vn.hoidanit.jobhunter.util.constant.LevelEnum;
 
@@ -32,7 +33,8 @@ public class Job {
 
     private Instant startDate;
     private Instant endDate;
-    private boolean active;
+    @Column(columnDefinition = "boolean default true")
+    private boolean active = true;
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;
