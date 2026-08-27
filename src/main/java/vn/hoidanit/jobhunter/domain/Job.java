@@ -26,11 +26,12 @@ public class Job {
     private String location;
     private double salary;
     private int quantity;
+
+    @Enumerated(EnumType.STRING)
     private LevelEnum level;
 
     @Column(columnDefinition = "MEDIUMTEXT")
     private String description;
-
     private Instant startDate;
     private Instant endDate;
     @Column(columnDefinition = "boolean default true")
@@ -39,6 +40,10 @@ public class Job {
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;
+
+    @OneToMany(mappedBy = "job", fetch = FetchType.LAZY)
+    @JsonIgnore
+    List<Resume> resumes;
 
     @ManyToOne
     @JoinColumn(name = "company_id")
