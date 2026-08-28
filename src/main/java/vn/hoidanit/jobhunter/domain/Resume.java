@@ -2,6 +2,7 @@ package vn.hoidanit.jobhunter.domain;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import vn.hoidanit.jobhunter.util.SecurityUtil;
@@ -18,7 +19,10 @@ public class Resume {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotBlank(message = "Email cannot blank")
     private String email;
+
+    @NotBlank(message = "URL cannot blank")
     private String url;
 
     @Enumerated(EnumType.STRING)
