@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import vn.hoidanit.jobhunter.domain.Company;
 import vn.hoidanit.jobhunter.domain.Job;
 import vn.hoidanit.jobhunter.domain.response.job.ResCreateJobDTO;
 import vn.hoidanit.jobhunter.domain.response.job.ResUpdateJobDTO;
@@ -39,11 +40,11 @@ public class JobController {
     public ResponseEntity<ResUpdateJobDTO> update(@Valid @RequestBody Job job) throws IdInvalidException {
         // check id
         Optional<Job> currentJob = this.jobService.fetchJobById(job.getId());
-        if (!currentJob.isPresent()){
+        if (currentJob.isEmpty()){
             throw new IdInvalidException("Job not found");
         }
 
-        return ResponseEntity.ok().body(this.jobService.update(job));
+        return ResponseEntity.ok().body(this.jobService.update(job, currentJob.get()));
     }
 
     @DeleteMapping("/jobs/{id}")
