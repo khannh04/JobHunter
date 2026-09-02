@@ -1,17 +1,25 @@
 package vn.hoidanit.jobhunter.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
 import vn.hoidanit.jobhunter.util.SecurityUtil;
 
 import java.time.Instant;
+import java.util.List;
 
 @Entity
 @Table(name = "roles")
+@Getter
+@Setter
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotBlank(message = "Name cannot blank")
     private String name;
     private String description;
     private boolean active;
@@ -20,6 +28,10 @@ public class Role {
     private Instant createdAt;
     private Instant updatedAt;
 
+    @ManyToMany
+    @JsonIgnoreProperties(value = { "roles" })
+    @JoinTable(name = "permission_role", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "permission_id"))
+    private List<Permission> permissions;
 
     @PrePersist
     public void handleBeforeCreate(){
