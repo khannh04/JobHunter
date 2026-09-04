@@ -27,6 +27,7 @@ public class PermissionController {
     @PostMapping("/permissions")
     @ApiMessage("Create a permission")
     public ResponseEntity<Permission> create(@Valid @RequestBody Permission permission) throws IdInvalidException {
+        // check module, api, method
         if (this.permissionService.isPermissionExist(permission)){
             throw new IdInvalidException("Permission already exists!");
         }
@@ -36,9 +37,11 @@ public class PermissionController {
     @PutMapping("/permissions")
     @ApiMessage("Update a permission")
     public ResponseEntity<Permission> update(@RequestBody Permission permission) throws IdInvalidException {
+        // check id
         if (this.permissionService.fetchById(permission.getId()) == null){
             throw new IdInvalidException("Permission is not exist");
         }
+        // check module, api, method
         if (this.permissionService.isPermissionExist(permission)){
             throw new IdInvalidException("Permission already exists!");
         }

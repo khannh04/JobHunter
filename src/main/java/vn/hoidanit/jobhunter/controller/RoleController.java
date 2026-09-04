@@ -49,4 +49,14 @@ public class RoleController {
     public ResponseEntity<ResultPaginationDTO> getAll(@Filter Specification<Role> spec, Pageable pageable){
         return ResponseEntity.ok().body(this.roleService.fetchAll(spec, pageable));
     }
+
+    @DeleteMapping("/roles/{id}")
+    @ApiMessage("delete a role")
+    public ResponseEntity<Void> delete(@PathVariable("id") long id) throws IdInvalidException {
+        // check id
+        if (this.roleService.fetchById(id) == null){
+            throw new IdInvalidException("Role with id: " + id + " does not exist");
+        }
+        return ResponseEntity.ok().body(null);
+    }
 }

@@ -81,4 +81,8 @@ public class RoleService {
 
         return res;
     }
+
+    public void delete(long id){
+        this.roleRepository.deleteById(id);
+    }
 }
