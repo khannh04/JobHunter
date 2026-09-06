@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.hoidanit.jobhunter.domain.Company;
+import vn.hoidanit.jobhunter.domain.Role;
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.response.ResCreateUserDTO;
 import vn.hoidanit.jobhunter.domain.response.ResUpdateUserDTO;
@@ -18,20 +19,26 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-    private  final UserRepository userRepository;
+    private final UserRepository userRepository;
     private final CompanyService companyService;
+    private final RoleService roleService;
 
-    public UserService(UserRepository userRepository, CompanyService companyService) {
+    public UserService(UserRepository userRepository, CompanyService companyService, RoleService roleService) {
         this.userRepository = userRepository;
         this.companyService = companyService;
+        this.roleService = roleService;
     }
 
     public User handleCreateNewUser(User user) {
-
         // check company
         if (user.getCompany() != null){
             Optional<Company> companyOptional = this.companyService.findById(user.getCompany().getId());
             user.setCompany(companyOptional.isPresent() ? companyOptional.get() : null);
+        }
+        // check role
+        if (user.getRole() != null){
+            Role role= this.roleService.fetchById(user.getRole().getId());
+            user.setRole(role != null ? role : null);
         }
 
          return this.userRepository.save(user);
@@ -70,18 +77,7 @@ public class UserService {
 
         // remove sensitive data
         List<ResUserDTO> listUser = pageUser.getContent()
-                .stream().map(item -> new ResUserDTO(
-                        item.getId(),
-                        item.getEmail(),
-                        item.getName(),
-                        item.getGender(),
-                        item.getAge(),
-                        item.getAddress(),
-                        item.getCreatedAt(),
-                        item.getUpdatedAt(),
-                        new ResUserDTO.CompanyUser(
-                                item.getCompany() != null ? item.getCompany().getId() : 0,
-                                item.getCompany() != null ? item.getCompany().getName() : null)))
+                .stream().map(item -> this.convertToResUserDto(item))
                 .collect(Collectors.toList());
         rs.setResult(listUser);
         return rs;
@@ -98,8 +94,13 @@ public class UserService {
             // check company
             if (user.getCompany() != null){
                 Optional<Company> companyOptional = this.companyService.findById(user.getCompany().getId());
-                user.setCompany(companyOptional.isPresent() ? companyOptional.get() : null);
+                updateUser.setCompany(companyOptional.isPresent() ? companyOptional.get() : null);
 
+            }
+            // check role
+            if (user.getRole() != null){
+                Role role= this.roleService.fetchById(user.getRole().getId());
+                updateUser.setRole(role != null ? role : null);
             }
             return this.userRepository.save(updateUser);
         }
