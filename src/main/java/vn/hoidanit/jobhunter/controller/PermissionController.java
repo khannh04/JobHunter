@@ -29,7 +29,10 @@ public class PermissionController {
     public ResponseEntity<Permission> create(@Valid @RequestBody Permission permission) throws IdInvalidException {
         // check module, api, method
         if (this.permissionService.isPermissionExist(permission)){
-            throw new IdInvalidException("Permission already exists!");
+            // check same name
+            if (this.permissionService.isSameName(permission)){
+                throw new IdInvalidException("Permission already exists!");
+            }
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(this.permissionService.create(permission));
     }
@@ -39,11 +42,14 @@ public class PermissionController {
     public ResponseEntity<Permission> update(@RequestBody Permission permission) throws IdInvalidException {
         // check id
         if (this.permissionService.fetchById(permission.getId()) == null){
-            throw new IdInvalidException("Permission is not exist");
+            throw new IdInvalidException("Permission does not exist");
         }
         // check module, api, method
         if (this.permissionService.isPermissionExist(permission)){
-            throw new IdInvalidException("Permission already exists!");
+            // check same name
+            if (this.permissionService.isSameName(permission)){
+                throw new IdInvalidException("Permission already exists!");
+            }
         }
         return ResponseEntity.ok().body(this.permissionService.update(permission));
     }
