@@ -1,5 +1,6 @@
 package vn.hoidanit.jobhunter.service;
 
+import com.turkraft.springfilter.parser.node.FilterNode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -9,6 +10,7 @@ import vn.hoidanit.jobhunter.domain.Role;
 import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.repository.PermissionRepository;
 import vn.hoidanit.jobhunter.repository.RoleRepository;
+import vn.hoidanit.jobhunter.util.SecurityUtil;
 
 import java.util.List;
 import java.util.Optional;

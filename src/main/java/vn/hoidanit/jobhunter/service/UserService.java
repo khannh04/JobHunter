@@ -127,6 +127,20 @@ public class UserService {
 
     public ResUserDTO convertToResUserDto(User user){
         ResUserDTO res = new ResUserDTO();
+        ResUserDTO.CompanyUser com = new ResUserDTO.CompanyUser();
+        ResUserDTO.RoleUser roleUser = new ResUserDTO.RoleUser();
+
+        if (user.getCompany() != null){
+            com.setId(user.getCompany().getId());
+            com.setName(user.getCompany().getName());
+            res.setCompany(com);
+        }
+
+        if (user.getRole() != null){
+            roleUser.setId(user.getRole().getId());
+            roleUser.setName(user.getRole().getName());
+            res.setRole(roleUser);
+        }
         res.setId(user.getId());
         res.setName(user.getName());
         res.setAge(user.getAge());

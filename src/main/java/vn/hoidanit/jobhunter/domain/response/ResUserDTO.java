@@ -31,13 +31,25 @@ public class ResUserDTO {
 
     private CompanyUser company;
 
+    private RoleUser role;
+
     @Setter
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
     public static class CompanyUser{
         private long id;
-        private  String name;
+        private String name;
     }
+
+    @Setter
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class RoleUser{
+        private long id;
+        private String name;
+    }
+
 
 }
