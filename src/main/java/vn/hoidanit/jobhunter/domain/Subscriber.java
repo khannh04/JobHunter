@@ -3,6 +3,7 @@ package vn.hoidanit.jobhunter.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import vn.hoidanit.jobhunter.util.SecurityUtil;
@@ -19,7 +20,10 @@ public class Subscriber {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotBlank(message = "Name cannot blank")
     private String name;
+
+    @NotBlank(message = "Email cannot blank")
     private String email;
     private String createdBy;
     private String updatedBy;
