@@ -32,7 +32,7 @@ public class SubscriberController {
 
     @PutMapping("/subscribers")
     @ApiMessage("Update a subscriber")
-    public ResponseEntity<Subscriber> update(@Valid @RequestBody Subscriber subsRequest) throws IdInvalidException {
+    public ResponseEntity<Subscriber> update(@RequestBody Subscriber subsRequest) throws IdInvalidException {
         Subscriber subsDB = this.subscriberService.findById(subsRequest.getId());
         if (subsDB == null){
             throw new IdInvalidException("Subscriber with id: " + subsRequest.getId() + " does not exist");
