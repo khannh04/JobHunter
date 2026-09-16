@@ -58,7 +58,7 @@ public class OpenAPIConfiguration {
         return new OpenAPI()
                 .info(createApiInfo())
                 .servers(List.of(
-                        createServer("http://localhost:8081", "Server URL in Development environment"),
+                        createServer("http://localhost:8081gi", "Server URL in Development environment"),
                         createServer("https://hoidanit.vn", "Server URL in Production environment")))
                 .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
                 .components(new Components().addSecuritySchemes("Bearer Authentication", createAPIKeyScheme()));
